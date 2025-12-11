@@ -3,10 +3,16 @@
 
 ;OEMVer=1 仅用于 skydimo
 
-#define MyAppVersion "2.0.2.r251201"
+; 下方三个版本宏由打包脚本自动维护：
+;   MyAppVersion     : 安装器显示用的版本号（通常等于 ProductVersion，例如 2.0.2.r251201）
+;   MyFileVersion    : 可执行文件的 FileVersion（例如 2.0.2.0）
+;   MyProductVersion : 可执行文件的 ProductVersion（例如 2.0.2.r251201）
+#define MyAppVersion "2.0.2.82edea9"
+#define MyFileVersion "2.0.2.0"
+#define MyProductVersion "2.0.2.82edea9"
 #define MyAppName "MageeLife"
 #define MyAppPublisher "Shenzhen Guang yvzhou Technology Co., Ltd."
-#define MyAppURL "https://www.skydimo.com"
+#define MyAppURL "https://www.mageelife.com/"
 #define MyAppExeName "MageeLife.exe"
 
 ; Delete autorun on uninstall

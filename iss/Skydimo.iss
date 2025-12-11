@@ -3,7 +3,13 @@
 
 ; OEMVer=1 仅用于 Skydimo
 
-#define MyAppVersion "2.0.2"
+; 下方三个版本宏由打包脚本自动维护：
+;   MyAppVersion     : 安装器显示用的短版本号（例如 2.0.2）
+;   MyFileVersion    : 可执行文件的 FileVersion（例如 2.0.2.0）
+;   MyProductVersion : 可执行文件的 ProductVersion（例如 2.0.2.6e4c602）
+#define MyAppVersion "2.0.2.6e4c602"
+#define MyFileVersion "2.0.2.0"
+#define MyProductVersion "2.0.2.6e4c602"
 #define MyAppName "Skydimo"
 #define MyAppPublisher "Shenzhen Guang yvzhou Technology Co., Ltd."
 #define MyAppURL "https://www.skydimo.com"

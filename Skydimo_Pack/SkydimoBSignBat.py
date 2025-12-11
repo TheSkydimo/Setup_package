@@ -94,22 +94,16 @@ def normalize_version_three_segments(ver: Optional[str]) -> str:
 # 版本信息相关
 # =========================
 
-def get_exe_version(file_path: str) -> Optional[str]:
+def _read_string_file_info_versions(file_path: str) -> Dict[str, str]:
     """
-    获取 EXE 版本号：
-    1) 优先使用 Win32 文件版本（更稳定）
-    2) 回退到 pefile 读取 StringFileInfo 中的 ProductVersion / FileVersion
-    """
-    # 1. Win32 文件版本
-    try:
-        info = win32api.GetFileVersionInfo(file_path, "\\")
-        ms = info["FileVersionMS"]
-        ls = info["FileVersionLS"]
-        return f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
-    except Exception:
-        pass
+    使用 pefile 读取 StringFileInfo 中的 ProductVersion / FileVersion。
 
-    # 2. pefile StringFileInfo
+    返回字典，可能包含：
+        - "ProductVersion"
+        - "FileVersion"
+    任意键不存在时不会出现在结果中。
+    """
+    result: Dict[str, str] = {}
     try:
         pe = pefile.PE(file_path)
         try:
@@ -143,26 +137,103 @@ def get_exe_version(file_path: str) -> Optional[str]:
                                     }
                                 except Exception:
                                     d = {}
-                                v = d.get("ProductVersion") or d.get("FileVersion") or None
-                                if v:
-                                    return v
+
+                                # 只在尚未获取到对应值时写入，避免覆盖更“权威”的来源
+                                for key_name in ("ProductVersion", "FileVersion"):
+                                    if key_name in d and key_name not in result:
+                                        result[key_name] = d[key_name]
         finally:
             try:
                 pe.close()
             except Exception:
                 pass
     except Exception:
+        # 读取失败直接返回当前结果（可能为空）
         pass
-    return None
+    return result
+
+
+def get_exe_version(file_path: str) -> Optional[str]:
+    """
+    获取 EXE 的“主版本号”字符串。
+
+    兼容旧逻辑：
+    1) 优先返回 Win32 FileVersion（数值型）
+    2) 回退到 StringFileInfo 中的 ProductVersion / FileVersion
+    """
+    # 1. Win32 文件版本
+    try:
+        info = win32api.GetFileVersionInfo(file_path, "\\")
+        ms = info["FileVersionMS"]
+        ls = info["FileVersionLS"]
+        return f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
+    except Exception:
+        pass
+
+    # 2. StringFileInfo
+    versions = _read_string_file_info_versions(file_path)
+    return versions.get("ProductVersion") or versions.get("FileVersion")
+
+
+def get_file_and_product_versions(file_path: str) -> Dict[str, Optional[str]]:
+    """
+    同时获取“文件版本(FileVersion)”和“产品版本(ProductVersion)”。
+
+    返回结构：
+        {"file": <FileVersion 或 None>, "product": <ProductVersion 或 None>}
+    """
+    file_version: Optional[str] = None
+    product_version: Optional[str] = None
+
+    # 1. Win32 数值型版本（如果资源里设置了 ProductVersionMS / ProductVersionLS 也一并读取）
+    try:
+        info = win32api.GetFileVersionInfo(file_path, "\\")
+
+        # FileVersion
+        ms = info.get("FileVersionMS")
+        ls = info.get("FileVersionLS")
+        if ms is not None and ls is not None:
+            file_version = f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
+
+        # ProductVersion（可能不存在）
+        p_ms = info.get("ProductVersionMS")
+        p_ls = info.get("ProductVersionLS")
+        if p_ms is not None and p_ls is not None:
+            product_version = f"{p_ms >> 16}.{p_ms & 0xFFFF}.{p_ls >> 16}.{p_ls & 0xFFFF}"
+    except Exception:
+        pass
+
+    # 2. 字符串版本补充（可获取到带后缀的完整 ProductVersion，如 2.0.2.6e4c602）
+    string_versions = _read_string_file_info_versions(file_path)
+    # ProductVersion 优先使用字符串值（这样才能拿到 2.0.2.6e4c602 这种完整版本）
+    if "ProductVersion" in string_versions:
+        product_version = string_versions["ProductVersion"]
+    # FileVersion 只有在 Win32 数值型不存在时，才用字符串值补充
+    if not file_version and "FileVersion" in string_versions:
+        file_version = string_versions["FileVersion"]
+
+    return {"file": file_version, "product": product_version}
 
 
 # =========================
 # Inno Setup 脚本处理
 # =========================
 
-def modify_inno_setup_script(file_path: str, oem_ver: int, version: int, app_version: str) -> None:
+def modify_inno_setup_script(
+    file_path: str,
+    oem_ver: int,
+    version: int,
+    app_version: str,
+    file_version: Optional[str] = None,
+    product_version: Optional[str] = None,
+) -> None:
     """
-    修改 Inno Setup 脚本中的 OEMVer / Ver / MyAppVersion 定义。
+    修改 Inno Setup 脚本中的 OEMVer / Ver / 版本相关定义。
+
+    参数：
+        - app_version     : 安装器显示用的短版本号（MyAppVersion）
+        - file_version    : 可执行文件 FileVersion（MyFileVersion）
+        - product_version : 可执行文件 ProductVersion（MyProductVersion）
 
     使用相对宽松的正则，避免版本位数变更导致替换失败。
     """
@@ -172,10 +243,26 @@ def modify_inno_setup_script(file_path: str, oem_ver: int, version: int, app_ver
     oem_ver_pattern = r'#define\s+OEMVer=\d+'
     version_pattern = r'#define\s+Ver=\d+'
     app_version_pattern = r'#define\s+MyAppVersion\s+"[^"]+"'
+    file_version_pattern = r'#define\s+MyFileVersion\s+"[^"]+"'
+    product_version_pattern = r'#define\s+MyProductVersion\s+"[^"]+"'
 
     content = re.sub(oem_ver_pattern, f"#define OEMVer={oem_ver}", content)
     content = re.sub(version_pattern, f"#define Ver={version}", content)
     content = re.sub(app_version_pattern, f'#define MyAppVersion "{app_version}"', content)
+
+    if file_version:
+        content = re.sub(
+            file_version_pattern,
+            f'#define MyFileVersion "{file_version}"',
+            content,
+        )
+
+    if product_version:
+        content = re.sub(
+            product_version_pattern,
+            f'#define MyProductVersion "{product_version}"',
+            content,
+        )
 
     with open(file_path, "w", encoding="utf-8") as file:
         file.write(content)
@@ -375,11 +462,28 @@ def process_package(timestamp_urls: Dict[str, Iterable[str]]) -> bool:
     if not _ensure_file_exists(config["exefullname"], "exe file"):
         return False
 
-    # 获取版本号（仅取前三段，不足三段补 0）
-    raw_ver = get_exe_version(config["exefullname"])
-    app_version = normalize_version_three_segments(raw_ver) or "1.0.0"
+    # 获取版本号：
+    #   - file_version_raw    : Skydimo.exe 的 FileVersion（属性页中的“文件版本”）
+    #   - product_version_raw : Skydimo.exe 的 ProductVersion（属性页中的“产品版本”）
+    versions = get_file_and_product_versions(config["exefullname"])
+    file_version_raw = versions.get("file")
+    product_version_raw = versions.get("product")
 
-    print(f"OEMVer: {config['OEMVer']}, Version: {app_version}")
+    # MyAppVersion：如果有 ProductVersion 字符串，则直接使用完整字符串
+    #   例如 2.0.2.6e4c602
+    # 否则退回旧逻辑，使用三段数字的短版本号
+    if product_version_raw:
+        app_version = product_version_raw
+    else:
+        base_version = file_version_raw or get_exe_version(config["exefullname"])
+        app_version = normalize_version_three_segments(base_version) or "1.0.0"
+
+    print(
+        f"OEMVer: {config['OEMVer']}, "
+        f"FileVersion: {file_version_raw}, "
+        f"ProductVersion: {product_version_raw}, "
+        f"MyAppVersion: {app_version}"
+    )
 
     # 检查 ISS 文件是否存在
     if not _ensure_file_exists(config["iss_file"], "ISS file"):
@@ -387,10 +491,12 @@ def process_package(timestamp_urls: Dict[str, Iterable[str]]) -> bool:
 
     # 修改 Inno Setup 脚本文件
     modify_inno_setup_script(
-        config["iss_file"],
-        config["OEMVer"],
-        config["Ver_value"],
-        app_version,
+        file_path=config["iss_file"],
+        oem_ver=config["OEMVer"],
+        version=config["Ver_value"],
+        app_version=app_version,
+        file_version=file_version_raw,
+        product_version=product_version_raw,
     )
 
     # 设置安装包输出路径（项目根目录下的 Setup_package 目录）
