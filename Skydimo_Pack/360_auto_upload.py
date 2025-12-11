@@ -773,8 +773,10 @@ def click_form_submit(driver: webdriver.Chrome):
 
 # ---------- 主流程 ----------
 def main():
-    ver = normalize_version(get_exe_file_version(EXE_PATH) or get_exe_product_version(EXE_PATH) or DEFAULT_VERSION)
-    log("将使用版本号:", ver)
+    # 优先使用安装包的产品版本（例如 2.0.2.6e4c602），再退回到文件版本，最后退回到默认版本号。
+    raw_ver = get_exe_product_version(EXE_PATH) or get_exe_file_version(EXE_PATH) or DEFAULT_VERSION
+    ver = normalize_version(raw_ver)
+    log("安装包原始版本号:", raw_ver, "；标准化后用于提交的版本号:", ver)
 
     driver = launch_browser(headless=HEADLESS)
     try:
