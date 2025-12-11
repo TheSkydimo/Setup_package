@@ -3,7 +3,7 @@
 
 ; OEMVer=1 仅用于 Skydimo
 
-#define MyAppVersion "2.0.0.release"
+#define MyAppVersion "2.0.2"
 #define MyAppName "Skydimo"
 #define MyAppPublisher "Shenzhen Guang yvzhou Technology Co., Ltd."
 #define MyAppURL "https://www.skydimo.com"
@@ -55,15 +55,18 @@ UninstallDisplayName={#MyAppName}
 DisableProgramGroupPage=yes
 ShowLanguageDialog=yes
 
-LicenseFile=License\license.txt
+; 许可证文件放在项目根目录的 License 目录下
+; 本脚本位于 iss 目录，因此使用 ..\License\ 相对路径
+LicenseFile=..\License\license.txt
 ;InfoBeforeFile=D:\Users\Super888\Documents\DaLed\Setup\License\license.txt
 
 ; 可切换为当前用户安装
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 
-; 生成输出目录
-OutputDir=Setup_package
+; 生成输出目录（相对于项目根目录，而不是 iss 子目录）
+; 当前脚本位于 {项目根}\iss，下方使用 ..\Setup_package 指向根目录下的 Setup_package
+OutputDir=..\Setup_package
 ; 打开日志功能
 SetupLogging=yes
 OutputBaseFilename=SkydimoSetup
@@ -82,7 +85,8 @@ UsePreviousAppDir=no
 ; 多语言
 ;------------------------------------------------------
 [Languages]
-Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"; LicenseFile: "License\license_cn.txt"
+; 中文简体使用单独的中文协议文件，同样位于上级 License 目录
+Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"; LicenseFile: "..\License\license_cn.txt"
 Name: "english"; MessagesFile: "compiler:Default.isl";
 Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
@@ -107,7 +111,7 @@ Name: "startup"; Description: "{cm:AutoStartProgram,{#MyAppName}}"; GroupDescrip
 ; 文件复制
 ;------------------------------------------------------
 [Files]
-#define Source_path "setup_data_V2.0"
+#define Source_path "..\Skydimo"
 
 ; VC++ 2015–2022 x64 运行库
 ; 1) 临时：用于静默安装（装完删除）

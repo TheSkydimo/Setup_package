@@ -43,11 +43,11 @@ UninstallDisplayName={#MyAppName}
 DisableProgramGroupPage=yes
 ShowLanguageDialog=yes
 
-LicenseFile=License\license_MageeLife_EN.txt
+LicenseFile=..\License\license_MageeLife_EN.txt
 PrivilegesRequiredOverridesAllowed=dialog
 
 //生成文件目录文件夹
-OutputDir=Setup_package
+OutputDir=..\Setup_package
 //打开日志功能
 SetupLogging=yes
 OutputBaseFilename=MageeLifeSetup
@@ -67,7 +67,7 @@ UsePreviousAppDir = no
 
 //语言
 [Languages]
-Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"; LicenseFile: "License\license_MageeLife_CN.txt"
+Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"; LicenseFile: "..\License\license_MageeLife_CN.txt"
 Name: "english"; MessagesFile: "compiler:Default.isl";
 Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
@@ -88,7 +88,7 @@ Name: "startup"; Description: "{cm:AutoStartProgram,{#MyAppName}}"; GroupDescrip
 
 
 [Files]
-#define Source_path "MageeLife"
+#define Source_path "..\MageeLife"
 ; 临时用于静默安装（装完删除）
 Source: "{#Source_path}\VC\vc_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 ; 可选：保留一份离线包给用户手动安装
@@ -96,11 +96,9 @@ Source: "{#Source_path}\VC\vc_redist.x64.exe"; DestDir: "{app}\Redist\VC"
 
 Source: "{#Source_path}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion signonce; 
 Source: "{#Source_path}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.exe"
+Source: "{#Source_path}\VC\vc_redist.x64.exe"; DestDir: "{app}\VC"; Flags: ignoreversion
 
 
-
-
-Source: "drivers\*"; DestDir:"{app}\drivers"; Flags: ignoreversion recursesubdirs createallsubdirs
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{userdesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; 

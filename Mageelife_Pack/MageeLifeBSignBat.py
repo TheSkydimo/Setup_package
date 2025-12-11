@@ -6,6 +6,10 @@ import pefile
 import time
 import win32api
 
+# 脚本所在目录及项目根目录（脚本在 `<项目根>/Mageelife_Pack` 下）
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 #获得程序版本号（优先 Win32 文件版本，回退 PE StringFileInfo）
 def get_exe_version(file_path):
     # 1) Win32 文件版本（更稳定）
@@ -65,9 +69,8 @@ def modify_inno_setup_script(file_path, oem_ver, version, app_version):
         file.write(content)
 
 def sign_file(file_path, timestamp_url, digest_algorithm):
-    # 获取当前文件的父目录
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    signtool_path = os.path.join(current_dir, "signtool.exe")
+    # signtool.exe 位于项目根目录
+    signtool_path = os.path.join(PROJECT_ROOT, "signtool.exe")
     
     if not os.path.isfile(signtool_path):
         print(f"Error: signtool.exe not found at {signtool_path}")
@@ -111,8 +114,8 @@ def sign_file_legacy(file_path, timestamp_url, digest_algorithm):
     使用旧的 Authenticode 时间戳方式（/t），在某些网络或服务器不兼容 RFC3161 时作为降级方案。
     注意：/t 不使用 /td 参数。
     """
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    signtool_path = os.path.join(current_dir, "signtool.exe")
+    # signtool.exe 位于项目根目录
+    signtool_path = os.path.join(PROJECT_ROOT, "signtool.exe")
     if not os.path.isfile(signtool_path):
         print(f"Error: signtool.exe not found at {signtool_path}")
         return False
@@ -201,11 +204,13 @@ def process_package(current_dir, timestamp_urls):
     """处理不同版本的打包流程"""
     # 配置不同版本的参数
     config = {
-        'exefullname': os.path.join(current_dir, "MageeLife", "MageeLife.exe"),
+        # 可执行文件位于项目根目录下的 MageeLife 目录
+        'exefullname': os.path.join(PROJECT_ROOT, "MageeLife", "MageeLife.exe"),
         'OEMVer': 1,
         'Ver_value': 1,
         'project_name': "MageeLife",
-        'iss_file': os.path.join(current_dir, "MageeLife.iss"),
+        # Inno Setup 脚本位于项目根目录下的 iss 目录
+        'iss_file': os.path.join(PROJECT_ROOT, "iss", "MageeLife.iss"),
         'setup_filename': "MageeLifeSetup.exe"
     }
         
@@ -243,8 +248,8 @@ def process_package(current_dir, timestamp_urls):
     # 修改 Inno Setup 脚本文件
     modify_inno_setup_script(config['iss_file'], config['OEMVer'], config['Ver_value'], MyApp_Version)
 
-    # 设置安装包输出路径
-    setupfullname = os.path.join(current_dir, "Setup_package", config['setup_filename'])
+    # 设置安装包输出路径（项目根目录下的 Setup_package 目录）
+    setupfullname = os.path.join(PROJECT_ROOT, "Setup_package", config['setup_filename'])
 
     # 签名应用程序
     print("Sign application with SHA256")
