@@ -27,7 +27,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
 
 # =============== 配置区 ===============
 ACCOUNT = "13570806357"
@@ -48,9 +47,8 @@ UPLOAD_TIMEOUT = 600  # 10 分钟
 HEADLESS = False      # True 则无头
 # ---- Speed tuning ----
 PAGE_LOAD_STRATEGY = "eager"   # return after DOMContentLoaded
-DISABLE_IMAGES = True           # block image loading to speed up
-IMPLICIT_WAIT_SECONDS = 1       # keep implicit wait short
-ENABLE_EVENT_LOGGER = False     # wrap driver with EventFiringWebDriver
+DISABLE_IMAGES = True          # block image loading to speed up
+IMPLICIT_WAIT_SECONDS = 1      # keep implicit wait short
 # ---- Navigation hardening ----
 NAV_MAX_RETRIES = 4
 # Optional custom UA (leave empty to use Chrome default)
@@ -62,93 +60,8 @@ AUTH_MAX_WAIT = 300             # 安全验证最长等待时间（秒）
 
 # ---------- 日志/调试 ----------
 def log(*args):
+    """轻量日志钩子，目前默认不输出；如需调试可改为 print(*args)。"""
     pass
-
-
-class LoggingListener(AbstractEventListener):
-    def _desc_el(self, el):
-        try:
-            tag = el.tag_name
-        except Exception:
-            tag = "?"
-        def safe_attr(name):
-            try:
-                return el.get_attribute(name) or ""
-            except Exception:
-                return ""
-        eid = safe_attr("id")
-        cls = safe_attr("class")
-        name = safe_attr("name")
-        etype = safe_attr("type")
-        txt = ""
-        try:
-            t = (el.text or "").strip()
-            if len(t) > 40:
-                t = t[:37] + "..."
-            txt = t
-        except Exception:
-            txt = ""
-        parts = [tag]
-        if eid:
-            parts.append(f"#{eid}")
-        if cls:
-            parts.append("." + ".".join([c for c in cls.split() if c]))
-        if name:
-            parts.append(f"[name={name}]")
-        if etype:
-            parts.append(f"[type={etype}]")
-        if txt:
-            parts.append(f"text=\"{txt}\"")
-        return "<" + " ".join(parts) + ">"
-
-    # navigation
-    def before_navigate_to(self, url, driver):
-        log(f"[nav] -> {url}")
-
-    def after_navigate_to(self, url, driver):
-        try:
-            log(f"[nav] at {driver.current_url}")
-        except Exception:
-            log("[nav] at (unknown)")
-
-    # finding
-    def before_find(self, by, value, driver):
-        log(f"[find] by={by} value={value}")
-
-    def after_find(self, by, value, driver):
-        log(f"[find] found by={by} value={value}")
-
-    # script
-    def before_execute_script(self, script, driver):
-        s = (script or "").strip().replace("\n", " ")
-        if len(s) > 120:
-            s = s[:117] + "..."
-        log(f"[script] -> {s}")
-
-    def after_execute_script(self, script, driver):
-        log("[script] done")
-
-    # clicking
-    def before_click(self, element, driver):
-        log(f"[click] {self._desc_el(element)}")
-
-    def after_click(self, element, driver):
-        log(f"[click] done {self._desc_el(element)}")
-
-    # value change (clear/send_keys)
-    def before_change_value_of(self, element, driver):
-        log(f"[input] -> {self._desc_el(element)}")
-
-    def after_change_value_of(self, element, driver):
-        log(f"[input] done {self._desc_el(element)}")
-
-    # exceptions
-    def on_exception(self, exception, driver):
-        try:
-            cur = driver.current_url
-        except Exception:
-            cur = "(unknown)"
-        log(f"[error] {exception} @ {cur}")
 
 def dump_upload_dom(driver, outdir="upload_dom_dump"):
     """把关键 DOM 与整页源码导出到本地文件，便于排查。"""
@@ -257,8 +170,8 @@ def launch_browser(headless: bool = False) -> webdriver.Chrome:
             )
         except Exception:
             pass
-    base_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=opts)
-    driver = EventFiringWebDriver(base_driver, LoggingListener()) if ENABLE_EVENT_LOGGER else base_driver
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=opts)
     try:
         driver.execute_script(
             "return (function(){Object.defineProperty(navigator,'webdriver',{get:()=>undefined}); return true;})()"

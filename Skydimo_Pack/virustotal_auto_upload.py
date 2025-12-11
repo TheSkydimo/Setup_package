@@ -12,8 +12,6 @@ EMAIL = "skydimo@skydimo.com"
 PASSWORD = "@2025Skydimo"
 FILE_TO_UPLOAD = r"D:\Install_packaging_related_programs\Setup_package\SkydimoSetup.exe"
 
-# 在文件顶部工具函数后面加上这两个：
-
 def find_choose_button(driver):
     """穿透所有 Shadow DOM，查找 'Choose file' 按钮（id=infoIcon 或文字匹配），找不到返回 None"""
     return driver.execute_script(r"""
