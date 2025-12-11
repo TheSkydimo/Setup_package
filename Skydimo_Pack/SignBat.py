@@ -553,30 +553,29 @@ def main() -> None:
 
     print("软件生成成功，开始进行360上传...")
 
-    # 进行 360 上传（使用动态导入，避免非法标识符及硬编码依赖）
-    try:
-        auto360 = importlib.import_module("Skydimo_Pack.360_auto_upload")
-        upload_main = getattr(auto360, "main", None)
-        if callable(upload_main):
-            upload_main()
-            print("360上传已完成。")
-        else:
-            print("警告：模块 'Skydimo_Pack.360_auto_upload' 未提供 main() 函数，已跳过 360 上传。")
-    except Exception as e:
-        print(f"360 上传阶段发生异常，已跳过：{e!r}")
+    script_dir = SCRIPT_DIR
 
-    # 进行 Virustotal 上传
+    # 360自动上传
     try:
-        vt_module = importlib.import_module("Skydimo_Pack.virustotal_auto_upload")
-        vt_main = getattr(vt_module, "main", None)
-        if callable(vt_main):
-            vt_main()
-            print("Virustotal上传已完成。")
-        else:
-            print("警告：模块 'Skydimo_Pack.virustotal_auto_upload' 未提供 main() 函数，已跳过 Virustotal 上传。")
-    except Exception as e:
-        print(f"Virustotal 上传阶段发生异常，已跳过：{e!r}")
+        subprocess.run(
+            [sys.executable, os.path.join(script_dir, "360_auto_upload.py")],
+            check=True,
+            cwd=script_dir,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: 360_auto_upload.py failed with exit code {e.returncode}")
 
+    # virustotal自动上传
+    try:
+        subprocess.run(
+            [sys.executable, os.path.join(script_dir, "virustotal_auto_upload.py")],
+            check=True,
+            cwd=script_dir,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: virustotal_auto_upload.py failed with exit code {e.returncode}")
+
+    print("命令执行完成!")
     sys.exit(0)
 
 
