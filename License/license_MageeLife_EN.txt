@@ -1,0 +1,27 @@
+Software License and Services Agreement
+
+This Agreement is a legal contract between you ("User") and the software provider (the "Software Provider", "we", or "us") regarding your installation and/or use of the Software and related services. Please read this Agreement carefully before installing or using the Software. By installing, copying, downloading, accessing, or otherwise using the Software, you acknowledge that you have read and agree to be bound by this Agreement.
+This Agreement may be updated from time to time. Once published, the updated terms replace the previous version and take effect immediately. If you do not agree to the updated terms, you should stop using the Software and related services immediately; your continued use constitutes acceptance of the updated terms.
+1. Intellectual Property
+All intellectual property rights, ownership, and related interests in and to the Software and its materials (including, without limitation, program code, UI/UX design, text, images, audiovisual materials, documents, trademarks, logos, and any derivative works) are owned by the Software Provider or the respective rights holders. Where the Software includes third-party open source or commercial components, you must comply with the applicable third-party licenses.
+2. Scope of License and Use Restrictions
+2.1 Subject to your continued compliance with this Agreement, the Software Provider grants you a limited, non-exclusive, non-transferable, revocable license to install, run, and use one copy of the Software on a single device.
+2.2 Unless permitted by law or expressly authorized in writing by the Software Provider, you shall not: (a) reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the Software; (b) rent, lease, lend, sublicense, distribute, or otherwise transfer the Software or any copy thereof for any commercial purpose; (c) remove, alter, or obscure any proprietary notices or labels on the Software; or (d) use the Software for any unlawful purpose or in any manner that may harm others, the platform, or the public interest.
+2.3 All rights not expressly granted to you are reserved by the Software Provider. Any use beyond the above license requires the Software Provider’s prior written consent.
+3. Updates and Changes
+To improve user experience and service quality, the Software Provider may update, upgrade, or modify the Software, including without limitation feature optimizations, performance improvements, and security enhancements. Certain updates may affect existing features or require you to install the latest version to continue using the Software.
+4. Disclaimers and Limitation of Liability
+4.1 The Software is provided "as is" and "as available," without any express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, reliability, non-infringement, or error-free operation.
+4.2 To the maximum extent permitted by applicable law, the Software Provider shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from your use of or inability to use the Software, including but not limited to loss of profits, data, goodwill, or other intangible losses.
+4.3 Use of the Software may involve Internet services. The Software Provider is not responsible for losses caused by force majeure, network failures, system instability, malicious attacks, viruses, or changes to or interruptions of third-party services.
+5. User Obligations
+You must comply with applicable laws and this Agreement, safeguard your device and account information, and refrain from infringing the lawful rights and interests of any third party. You shall be responsible for any claims, losses, or expenses arising from your breach and shall hold the Software Provider harmless from and against the same.
+6. Privacy and Data
+The Software Provider will handle personal information in accordance with applicable privacy policies and laws. Where the Software needs to collect, use, or process personal information, we will obtain your consent where required by law and will implement reasonable security measures.
+7. Termination
+If you materially breach this Agreement, the Software Provider may, without prior notice, terminate your license and restrict or suspend your access to and use of the Software. Upon termination, you must immediately cease all use of and uninstall the Software.
+8. Miscellaneous
+8.1 If any provision of this Agreement is held invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+8.2 The formation, effectiveness, performance, and dispute resolution of this Agreement are subject to the mandatory provisions of applicable law. Any dispute arising from this Agreement shall first be resolved through amicable negotiation; if the negotiation fails, either party may bring a claim before a court of competent jurisdiction.
+8.3 The headings in this Agreement are for convenience only and shall not affect the meaning or interpretation of any provision.
+

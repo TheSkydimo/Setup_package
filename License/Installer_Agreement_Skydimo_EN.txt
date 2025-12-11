@@ -1,0 +1,79 @@
+Software End User License Agreement (Test Version)
+
+This Software End User License Agreement ("Agreement") is entered into by and between the user (an individual or legal entity, hereinafter referred to as "User") and Shenzhen Light Universe Technology Co., Ltd. (hereinafter referred to as "Light Universe" or "we"). This Agreement governs your download, installation, operation, and use of the software and related services.
+
+By clicking "I Agree", or by installing or using this software, you are deemed to have read, understood, and accepted all terms of this Agreement.
+
+---
+
+[1] Software Nature & Licensing Terms
+
+1.1 This software is derived from the open-source project OpenRGB (https://openrgb.org) and is released under the GNU General Public License v2 (GPLv2). We express our gratitude to the OpenRGB community.
+
+1.2 Under the GPLv2 license, users may freely use, copy, modify, and redistribute the software source code. Redistribution must retain the original license.
+
+1.3 Light Universe may offer value-added services (e.g., cloud sync, AI lighting, plugin systems) on top of this open-source foundation. These features may be closed-source and provided as paid features in future commercial releases.
+
+---
+
+[2] Disclaimer for Test Version & Feature Limitations
+
+2.1 This software is a public test version for preview and feedback purposes only. Light Universe makes no guarantee of feature completeness, stability, or continued support for this version.
+
+2.2 Some features shown in this version may be upgraded, limited, or become paid features in future versions. The test version is not a promise of future product direction or licensing terms.
+
+2.3 This test version is valid until December 31, 2025. Users will be prompted to update to the official release afterward.
+
+---
+
+[3] Data Collection & Privacy Protection
+
+3.1 With your explicit consent, this software may collect the following information to improve product experience and assist in debugging:
+    - Feature usage behavior and actions;
+    - Crash logs and error reports;
+    - Anonymous technical information (e.g., OS version, screen resolution);
+
+3.2 All data is transmitted securely and stored on servers located in mainland China. It will not be used for advertising or commercial resale. You can disable this feature or send logs manually in the software settings.
+
+3.3 Light Universe complies with the Personal Information Protection Law (PIPL) of China and the General Data Protection Regulation (GDPR). Without your authorization or legal obligation, your personal information will not be sold or disclosed.
+
+---
+
+[4] User Rights & Code of Conduct
+
+4.1 Users are free to use, study, and distribute the software under the GPL license terms.
+
+4.2 Users may not:
+    - Remove or alter copyright notices and license terms;
+    - Use the software for illegal purposes or to harm network security;
+    - Reverse engineer or tamper with server verification or paid feature mechanisms;
+
+4.3 Light Universe reserves the right to introduce or modify commercial features. Users may choose whether to use them.
+
+---
+
+[5] Updates & Agreement Modifications
+
+5.1 This software may periodically release updates. Users may choose whether to upgrade.
+
+5.2 Light Universe reserves the right to amend this Agreement and will notify users via the software interface or website. Continued use constitutes acceptance of the modified Agreement.
+
+---
+
+[6] Disclaimer
+
+6.1 The software is provided "as is", without warranties of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, or non-infringement.
+
+6.2 To the maximum extent permitted by applicable law, Light Universe shall not be liable for any direct, indirect, incidental, or consequential damages arising from the use or inability to use this software.
+
+---
+
+[7] Governing Law & Dispute Resolution
+
+7.1 This Agreement shall be governed by the laws of the People’s Republic of China. Matters not covered shall be interpreted in accordance with the GPLv2 license.
+
+7.2 In case of any dispute, the parties shall first seek resolution through friendly negotiation. If that fails, the dispute shall be submitted to a court of competent jurisdiction in Shenzhen, China.
+
+---
+
+By clicking "I Agree", you confirm that you have read and accepted all terms of this Agreement.

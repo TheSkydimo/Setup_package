@@ -1,0 +1,21 @@
+## Python cache
+__pycache__/
+*.py[cod]
+
+## Build / package output
+Setup_package/
+SkydimoSetup.exe
+
+## Do not upload any content under MageeLife
+MageeLife/
+## Do not upload any content under Skydimo
+Skydimo/
+
+## Temporary or generated files
+Skydimo_Pack/temp_snip.txt
+Skydimo_Pack/upload_dom_dump/
+
+## Local tools / binaries
+signtool.exe
+SignBat_V1.0_240416.bat
+
