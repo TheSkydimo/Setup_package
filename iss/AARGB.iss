@@ -7,16 +7,16 @@
 ;   MyAppVersion     : 安装器显示用的版本号（通常等于 ProductVersion，例如 2.0.2.r251201）
 ;   MyFileVersion    : 可执行文件的 FileVersion（例如 2.0.2.0）
 ;   MyProductVersion : 可执行文件的 ProductVersion（例如 2.0.2.r251201）
-#define AppVersionFull "2.0.2.a99912d"
+#define AppVersionFull "2.0.2.3223981"
 #define AppVersionFile "2.0.2.0"
 
 #define MyAppVersion AppVersionFull
 #define MyProductVersion AppVersionFull
 #define MyFileVersion AppVersionFile
-#define MyAppName "MageeLife"
+#define MyAppName "AARGB"
 #define MyAppPublisher "Shenzhen Guang yvzhou Technology Co., Ltd."
-#define MyAppURL "https://www.mageelife.com/"
-#define MyAppExeName "MageeLife.exe"
+#define MyAppURL " "
+#define MyAppExeName "AARGB.exe"
 
 ; Delete autorun on uninstall
 ;注册
@@ -56,14 +56,14 @@ LanguageDetectionMethod=uilanguage
 ;是否允许使用以前的语言
 UsePreviousLanguage=no
 
-LicenseFile=..\License\license_MageeLife_EN.txt
+LicenseFile=..\License\license_EN.txt
 PrivilegesRequiredOverridesAllowed=dialog
 
 //生成文件目录文件夹
 OutputDir=..\Setup_package
 //打开日志功能
 SetupLogging=yes
-OutputBaseFilename=MageeLifeSetup_{#AppVersionFull}
+OutputBaseFilename=AARGBSetup_{#AppVersionFull}
 
 ;SetupIconFile=D:\Users\Super888\Documents\DaLed\Setup\main.ico
 Compression=lzma
@@ -80,7 +80,7 @@ UsePreviousAppDir = no
 
 //语言
 [Languages]
-Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"; LicenseFile: "..\License\license_MageeLife_CN.txt"
+Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"; LicenseFile: "..\License\license_CN.txt"
 Name: "english"; MessagesFile: "compiler:Default.isl";
 Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
@@ -101,7 +101,7 @@ Name: "startup"; Description: "{cm:AutoStartProgram,{#MyAppName}}"; GroupDescrip
 
 
 [Files]
-#define Source_path "..\MageeLife"
+#define Source_path "..\AARGB"
 ; 临时用于静默安装（装完删除）
 Source: "{#Source_path}\VC\vc_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 ; 可选：保留一份离线包给用户手动安装

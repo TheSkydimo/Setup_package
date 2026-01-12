@@ -5,11 +5,14 @@ __pycache__/
 ## Build / package output
 Setup_package/
 SkydimoSetup.exe
-
-## Do not upload any content under MageeLife
+AARGB/
+APEX/
 MageeLife/
-## Do not upload any content under Skydimo
 Skydimo/
+steam/
+ALL_EXE/upload_dom_dump
+ALL_EXE/可视化
+
 
 ## Temporary or generated files
 Skydimo_Pack/temp_snip.txt
