@@ -40,8 +40,10 @@ ENABLE_DOM_DUMP = False
 UPLOAD_TIMEOUT = 600  # 10 分钟
 HEADLESS = False      # True 则无头
 # ---- Speed tuning ----
-PAGE_LOAD_STRATEGY = "eager"   # return after DOMContentLoaded
-DISABLE_IMAGES = True           # block image loading to speed up
+PAGE_LOAD_STRATEGY = "eager"    # return after DOMContentLoaded
+# IMPORTANT: 360 登录/安全验证（拼图/验证码）依赖图片资源，默认不要禁用图片加载。
+# 若你确认不需要验证码（已保持登录/无风控），可通过命令行 --disable-images 或环境变量 Q360_DISABLE_IMAGES=1 再开启。
+DISABLE_IMAGES = False
 IMPLICIT_WAIT_SECONDS = 1       # keep implicit wait short
 ENABLE_EVENT_LOGGER = False     # wrap driver with EventFiringWebDriver
 # ---- Navigation hardening ----
@@ -612,6 +614,8 @@ def detect_security_verification(driver: webdriver.Chrome) -> bool:
         "contains(normalize-space(.),'短信') or "
         "contains(normalize-space(.),'验证码') or "
         "contains(normalize-space(.),'滑块') or "
+        "contains(normalize-space(.),'拼图') or "
+        "contains(normalize-space(.),'拖动') or "
         "contains(normalize-space(.),'请完成验证')]"
     )
 
@@ -619,6 +623,7 @@ def detect_security_verification(driver: webdriver.Chrome) -> bool:
         ".geetest_panel", ".geetest-bubble", ".gt_slider", ".gt_popup", ".gt_box",
         ".nc-container", ".slider", "[class*='captcha' i]", "[id*='captcha' i]",
         "[class*='verify' i]", "[id*='verify' i]",
+        ".verify-slide-con", ".verify-slide", ".quc-captcha-slide",
     ]
 
     def check_here() -> bool:
@@ -744,15 +749,27 @@ def goto_submit_page(driver: webdriver.Chrome):
         return True
 
     def ready(d):
-        url = (d.current_url or "").lower()
-        if "softsubmit" in url or "softadd" in url:
-            return True
+        """
+        只把真正的“开放平台提交页”当作 ready。
+        以前用 `form.is_displayed()` 会把登录页误判为提交页，导致后续找不到上传 input。
+        """
         try:
-            if d.find_element(By.CSS_SELECTOR, "form").is_displayed():
-                return True
+            url = (d.current_url or "").lower()
         except Exception:
-            pass
-        return "软件提交" in (d.title or "")
+            url = ""
+        if "open.soft.360.cn" not in url:
+            return False
+        if ("softsubmit" not in url) and ("softadd" not in url):
+            return False
+        # 关键上传区域之一出现即可
+        for css in ("#single_upload", "#js-upload-soft", ".js-uploadify-list", "input[type='file']"):
+            try:
+                el = d.find_element(By.CSS_SELECTOR, css)
+                if el and el.is_displayed():
+                    return True
+            except Exception:
+                continue
+        return False
 
     clicked = click_nav_submit()
     if not clicked:
@@ -991,14 +1008,24 @@ def main():
         else:
             log("未能自动提交登录表单，可能已登录或页面结构变化。")
 
-        # 等待安全验证/登录完成，避免未加载出验证就继续导致失败
-        wait_for_security_verification_if_any(driver, timeout=AUTH_MAX_WAIT)
-
-        if not logged_in_ready(driver):
+        # 等待安全验证/登录完成：不完成就不要继续，否则会把登录页当提交页跑崩
+        ok_login = wait_for_security_verification_if_any(driver, timeout=AUTH_MAX_WAIT)
+        if not ok_login or not logged_in_ready(driver):
+            dump_upload_dom(driver)
             try:
-                driver.get("https://open.soft.360.cn/softlist.php")
+                cur = driver.current_url
             except Exception:
-                pass
+                cur = "(unknown)"
+            try:
+                ttl = driver.title
+            except Exception:
+                ttl = "(unknown)"
+            raise RuntimeError(
+                "登录未完成/仍在安全验证页面，已停止后续上传步骤。\n"
+                f"当前 URL: {cur}\n"
+                f"当前 Title: {ttl}\n"
+                "请先在弹出的浏览器里完成拼图/验证码（确保图片能加载），然后重试。"
+            )
 
         goto_my_software(driver)
         goto_submit_page(driver)
@@ -1031,6 +1058,11 @@ if __name__ == "__main__":
         p.add_argument("--version", required=False, default=_env("Q360_VERSION", ""), help="Override version string (or env Q360_VERSION). If omitted, infer from filename.")
         p.add_argument("--headless", action="store_true", help="Run Chrome headless.")
         p.add_argument("--dom-dump", action="store_true", help="Dump DOM/page html on errors.")
+        p.add_argument(
+            "--disable-images",
+            action="store_true",
+            help="Block image loading (faster). WARNING: will break captcha/puzzle verification pages.",
+        )
         p.add_argument("--upload-timeout", type=int, default=int(_env("Q360_UPLOAD_TIMEOUT", str(UPLOAD_TIMEOUT)) or UPLOAD_TIMEOUT))
         p.add_argument("--auth-timeout", type=int, default=int(_env("Q360_AUTH_TIMEOUT", str(AUTH_MAX_WAIT)) or AUTH_MAX_WAIT))
 
@@ -1046,6 +1078,8 @@ if __name__ == "__main__":
         VERSION_OVERRIDE = args.version
         HEADLESS = bool(args.headless)
         ENABLE_DOM_DUMP = bool(args.dom_dump)
+        # allow env override too
+        DISABLE_IMAGES = bool(args.disable_images) or (_env("Q360_DISABLE_IMAGES", "").strip() in ("1", "true", "True", "yes", "YES"))
         UPLOAD_TIMEOUT = int(args.upload_timeout)
         AUTH_MAX_WAIT = int(args.auth_timeout)
 
