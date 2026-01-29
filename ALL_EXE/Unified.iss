@@ -28,8 +28,8 @@
   #define MyAppExeName "Skydimo.exe"
   #define MyAppId "{{8D06DDFC-021C-4853-85AE-81798EF0AF0B}}"
   #define SetupOutputBase "SkydimoSetup_"
-  #define SetupLicenseFile "..\License\license1.txt"
-  #define SetupLicenseCNFile "..\License\license_cn1.txt"
+  #define SetupLicenseFile "..\License\Skydimo_EN.txt"
+  #define SetupLicenseCNFile "..\License\Skydimo_CN.txt"
   #define Source_path "..\Skydimo"
 #endif
 
@@ -64,8 +64,8 @@
   #define MyAppExeName "MageeLife.exe"
   #define MyAppId "{{591829A4-48F0-4082-94B6-A5159B3EB49F}}"
   #define SetupOutputBase "MageeLifeSetup_"
-  #define SetupLicenseFile "..\License\license_MageeLife_EN.txt"
-  #define SetupLicenseCNFile "..\License\license_MageeLife_CN.txt"
+  #define SetupLicenseFile "..\License\license_EN.txt"
+  #define SetupLicenseCNFile "..\License\license_CN.txt"
   #define Source_path "..\MageeLife"
 #endif
 

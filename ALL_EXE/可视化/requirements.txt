@@ -1,0 +1,12 @@
+# Runtime deps used by underlying scripts (SignBat / remote_sign_client / 360_auto_upload)
+requests>=2.31.0
+pefile>=2023.2.7
+pywin32>=306
+
+# Optional (required when using 360 auto upload)
+selenium>=4.16.0
+webdriver-manager>=4.0.1
+
+# Build tool (for packaging the launcher itself)
+pyinstaller>=6.6.0
+

@@ -1,0 +1,33 @@
+{
+  "software": {
+    "local_exe_path": "",
+    "upload_name_template": "{version}"
+  },
+  "cloudflare": {
+    "account_id": "daad35cead75b8df66d9e86aa2909661",
+    "access_key_id": "e5101d2e53bd147172d12b51f2e0cac5",
+    "secret_access_key": "532df94d0f194d4f62411426665f637291e3793a2deff0ae7f66bd1894a21d39",
+    "bucket_name": "app-release",
+    "remote_dir": "skydimo-setup"
+  },
+  "servers": [
+    {
+      "name": "langlangyun",
+      "type": "sftp",
+      "host": "114.66.28.100",
+      "port": 22,
+      "username": "root",
+      "password": "Qw9lfFjX*tPeJW#0r9Uu",
+      "remote_dir": "/var/www/files/skydimo-setup/"
+    },
+    {
+      "name": "bt",
+      "type": "sftp",
+      "host": "47.104.194.96",
+      "port": 22,
+      "username": "root",
+      "password": "@Xl13EG!pjT@I8jn4l0U",
+      "remote_dir": "/www/wwwroot/cn3-dl.skydimo.com/skydimo-setup/"
+    }
+  ]
+}
